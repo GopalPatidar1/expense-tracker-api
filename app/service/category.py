@@ -2,36 +2,36 @@ from app.repository import category
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.customException import CustomException
 from fastapi import status
-from app.models.expenseCategories import ExpenseCategories
+from app.models.expense_categories import ExpenseCategories
 
-async def createCategory(data, db: AsyncSession):
+async def create_category(data, db: AsyncSession):
     try:
-     categoryData = ExpenseCategories(
+     category_data = ExpenseCategories(
        category=data.category
      )
 
-     await category.createCategory(db=db, data=categoryData)
+     await category.create_category(db=db, data=category_data)
 
      await db.commit()
-     await db.refresh(categoryData)
+     await db.refresh(category_data)
  
-     return {"id":categoryData.id}
+     return {"id":category_data.id}
 
     except Exception as e:
      await db.rollback()
      raise CustomException(status.HTTP_422_UNPROCESSABLE_CONTENT)
 
-async def getCategory(db:AsyncSession):
+async def get_category(db:AsyncSession):
   try:
-   return await category.getCategory(db)
+   return await category.get_category(db)
   except Exception as e:
     await db.rollback()
     raise CustomException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to fetch categories")
 
-async def updateCategory(db: AsyncSession, id: int, data):
+async def update_category(db: AsyncSession, id: int, data):
    try:
-     categoryData =  await category.updateCategory(db=db, data=data, id=id)
-     if categoryData is None:
+     category_data =  await category.update_category(db=db, data=data, id=id)
+     if category_data is None:
         raise CustomException(status.HTTP_404_NOT_FOUND, "Category not found")
      await db.commit()
    except CustomException:
@@ -40,9 +40,9 @@ async def updateCategory(db: AsyncSession, id: int, data):
      await db.rollback()
      raise CustomException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to update category")
 
-async def deleteCategory(db: AsyncSession, id: int):
+async def delete_category(db: AsyncSession, id: int):
    try:
-     result =  await category.deleteCategory(db= db, id= id)
+     result =  await category.delete_category(db= db, id= id)
 
      if result.rowcount == 0:
         raise CustomException(status.HTTP_404_NOT_FOUND, "Category not found")

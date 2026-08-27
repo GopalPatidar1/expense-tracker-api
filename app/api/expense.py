@@ -9,25 +9,25 @@ router = APIRouter(prefix='/expense', tags=[
 ])
 
 @router.get('/', response_model=ExpenseResponse)
-async def getExpenselist(request: Request, db: AsyncSession = Depends(get_db), limit:int = 10, nextCursor: int | None=None, dateFilter:str|None=None):
-    userId =  request.state.userId
-    return await expense.getExpenselist(userId=userId, db=db, limit=limit, nextCursor=nextCursor, dateFilter= dateFilter)
+async def get_expense_list(request: Request, db: AsyncSession = Depends(get_db), limit:int = 10, next_cursor: int | None=None, date_filter:str | None=None):
+    user_id =  request.state.user_id
+    return await expense.get_expense_list(user_id= user_id, db=db, limit=limit, next_cursor=next_cursor, date_filter= date_filter)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def addExpenseItem(request: Request, data: ExpenseItem, db: AsyncSession = Depends(get_db)):
-    userId = request.state.userId
-    return await expense.addExpensesItem(db, data, userId)
+async def add_expense_item(request: Request, data: ExpenseItem, db: AsyncSession = Depends(get_db)):
+    user_id = request.state.user_id
+    return await expense.add_expenses_item(db, data, user_id)
 
 @router.put('/{id}')
-async def updateExpenseItem(id: int, request: Request, item: UpdateExpenseItem, db: AsyncSession = Depends(get_db)):
-    return await expense.updateExpensesItem(userId=request.state.userId, data=item, db=db, id=id)
+async def update_expense_item(id: int, request: Request, item: UpdateExpenseItem, db: AsyncSession = Depends(get_db)):
+    return await expense.update_expenses_item(user_id=request.state.user_id, data=item, db=db, id=id)
 
 @router.delete('/{id}')
-async def deleteExpenseItem(id: int,request: Request, db: AsyncSession =Depends(get_db)):
-    return await expense.deleteExpenseItem(id=id, db= db, userId= request.state.userId)
+async def delete_expense_item(id: int,request: Request, db: AsyncSession =Depends(get_db)):
+    return await expense.delete_expense_item(id=id, db= db, user_id= request.state.user_id)
 
 @router.get('/{id}')
-def getExpenseItem(id: int):
+def get_expense_item(id: int):
     return {
         'id': id,
         'title': f'Expense item {id}',

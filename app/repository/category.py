@@ -1,16 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
-from app.models.expenseCategories import ExpenseCategories
+from app.models.expense_categories import ExpenseCategories
 
-async def createCategory(db: AsyncSession, data):
+async def create_category(db: AsyncSession, data):
    db.add(data)
    return data
 
-async def getCategory(db: AsyncSession):
+async def get_category(db: AsyncSession):
    data = await db.scalars(select(ExpenseCategories))
    return data.all()
 
-async def updateCategory(db: AsyncSession, id: int,  data):
+async def update_category(db: AsyncSession, id: int,  data):
    result = await db.execute(
            update(ExpenseCategories)
            .where(ExpenseCategories.id == id,)
@@ -19,5 +19,5 @@ async def updateCategory(db: AsyncSession, id: int,  data):
           )
    return result.scalar_one_or_none()
 
-async def deleteCategory(db: AsyncSession, id: int):
+async def delete_category(db: AsyncSession, id: int):
    return await db.execute(delete(ExpenseCategories).where(ExpenseCategories.id == id))

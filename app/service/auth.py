@@ -27,13 +27,12 @@ async def registerUser(request, db):
       }
 
     except Exception as e:
-        print("🚀 ~ registerUser ~ e:", e)
         await db.rollback()
         raise CustomException(status.HTTP_422_UNPROCESSABLE_CONTENT, 'Something went wrong')
 
-def createAccessToken(userId: int) -> str:
+def createAccessToken(user_id: int) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=secretes.ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = { "userId": str(userId), "exp": expire }
+    payload = { "user_id": str(user_id), "exp": expire }
 
     return jwt.encode(
         payload,

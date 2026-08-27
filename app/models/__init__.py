@@ -1,4 +1,4 @@
-from app.models import users, expenses, expenseCategories
+from app.models import expense_categories, users, expenses
 __all__ = [
     'users',
     'expenses'

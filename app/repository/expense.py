@@ -4,34 +4,34 @@ from app.models.expenses import Expenses
 from app.models.users import User
 from sqlalchemy.ext.asyncio import AsyncSession
 
-async def addExpenses(db:AsyncSession, expenses):
+async def add_expenses(db:AsyncSession, expenses):
     db.add(expenses)
 
-async def getExpenselist(db: AsyncSession, userId: str, nextCursor: int | None, limit:int, startDate, endDate):
-    filterRec = [Expenses.user_id == userId]
+async def get_expense_list(db: AsyncSession, user_id: str, next_cursor: int | None, limit:int, start_date,  end_date):
+    filter = [Expenses.user_id == user_id]
 
-    if startDate is not None:
-        filterRec.append(Expenses.created_at >= startDate)
+    if start_date is not None:
+        filter.append(Expenses.created_at >= start_date)
 
-    if endDate is not None:
-        filterRec.append(Expenses.created_at <= endDate)
+    if end_date is not None:
+        filter.append(Expenses.created_at <= end_date)
 
-    if nextCursor is not None:
-        filterRec.append(Expenses.id <= nextCursor)
+    if next_cursor is not None:
+        filter.append(Expenses.id <= next_cursor)
 
     result = await db.scalars(
         select(Expenses)
         .options(selectinload(Expenses.user), selectinload(Expenses.category)) 
-        .where(*filterRec)
+        .where(*filter)
         .order_by(Expenses.id.desc())
         .limit(limit+1)
     )
 
     return result.all()
 
-async def deleteExpense(id: int, userId: int, db: AsyncSession):
+async def delete_expense(id: int, user_id: int, db: AsyncSession):
     result = await db.execute(delete(Expenses).where(
-        Expenses.user_id == userId,
+        Expenses.user_id == user_id,
         Expenses.id == id
     ))
 
@@ -39,12 +39,12 @@ async def deleteExpense(id: int, userId: int, db: AsyncSession):
 
     return result
 
-async def updateExpense(db: AsyncSession, id:int, userId: int, data):
+async def update_expense(db: AsyncSession, id:int, user_id: int, data):
      result = await db.execute(
         update(Expenses)
         .where(
             Expenses.id == id,
-            Expenses.user_id == userId
+            Expenses.user_id == user_id
         )
         .values(**data.model_dump(exclude_unset=True))
         .returning(Expenses)

@@ -9,17 +9,17 @@ router = APIRouter(prefix="/catergory", tags=[
 ])
 
 @router.get('/')
-async def getCategory(db: AsyncSession= Depends(get_db)):
-  return await category.getCategory(db)
+async def get_category(db: AsyncSession= Depends(get_db)):
+  return await category.get_category(db)
 
 @router.post('/')
-async def createCategory(data: CreateCategory, db: AsyncSession = Depends(get_db)):
-  return await category.createCategory(data=data, db=db)
+async def create_category(data: CreateCategory, db: AsyncSession = Depends(get_db)):
+  return await category.create_category(data=data, db=db)
 
 @router.put('/{id}')
-async def updateCategory(id: int, db: AsyncSession= Depends(get_db), data = CreateCategory):
-  return await category.updateCategory(db= db,data= data, id=id)
+async def update_category(id: int, db: AsyncSession= Depends(get_db), data = CreateCategory):
+  return await category.update_category(db= db,data= data, id=id)
 
 @router.delete('/{id}')
-async def deleteCategory(id: int, db: AsyncSession= Depends(get_db)):
-  return await category.deleteCategory(db=db, id=id)
+async def delete_category(id: int, db: AsyncSession= Depends(get_db)):
+  return await category.delete_category(db=db, id=id)

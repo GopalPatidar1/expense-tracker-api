@@ -20,7 +20,7 @@ class ExpenseItem(BaseModel):
     category_id: int
 
 class UpdateExpenseItem(BaseModel):
-    amount: int | None = Field(ge=1)
+    amount: int | None = Field(default=None, ge=1)
     payment_method: PaymentMethod | None = None
     description: str | None = Field(min_length=5, max_length=255)
     category_id: int | None = None
@@ -43,6 +43,6 @@ class ExpenseResponseItem(BaseModel):
 
 
 class ExpenseResponse(BaseModel):
-    nextCursor: int | None = None
-    availNext: bool
+    next_cursor: int | None = None
+    avail_next: bool
     result: list[ExpenseResponseItem]
