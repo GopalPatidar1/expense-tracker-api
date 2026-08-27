@@ -7,15 +7,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 async def addExpenses(db:AsyncSession, expenses):
     db.add(expenses)
 
-async def getExpenselist(db: AsyncSession, userId: str, nextCursor: int | None, limit:int):
+async def getExpenselist(db: AsyncSession, userId: str, nextCursor: int | None, limit:int, startDate, endDate):
     filterRec = [Expenses.user_id == userId]
+
+    if startDate is not None:
+        filterRec.append(Expenses.created_at >= startDate)
+
+    if endDate is not None:
+        filterRec.append(Expenses.created_at <= endDate)
 
     if nextCursor is not None:
         filterRec.append(Expenses.id <= nextCursor)
 
     result = await db.scalars(
         select(Expenses)
-        .options(selectinload(Expenses.user)) 
+        .options(selectinload(Expenses.user), selectinload(Expenses.category)) 
         .where(*filterRec)
         .order_by(Expenses.id.desc())
         .limit(limit+1)

@@ -23,7 +23,7 @@ async def createCategory(data, db: AsyncSession):
 
 async def getCategory(db:AsyncSession):
   try:
-    await category.getCategory(db)
+   return await category.getCategory(db)
   except Exception as e:
     await db.rollback()
     raise CustomException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to fetch categories")
@@ -40,7 +40,7 @@ async def updateCategory(db: AsyncSession, id: int, data):
      await db.rollback()
      raise CustomException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Failed to update category")
 
-async def deleteCategory(db: AsyncSession, id: int, data):
+async def deleteCategory(db: AsyncSession, id: int):
    try:
      result =  await category.deleteCategory(db= db, id= id)
 

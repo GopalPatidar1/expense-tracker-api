@@ -7,10 +7,13 @@ from app.config.database import Base
 import bcrypt
 
 class Categories(str, Enum):
-    CASH = "cash"
-    UPI = "upi"
-    CARD = "card"
-    OTHER = "other"
+    GROCERIES = "groceries"
+    LEISURE ="leisure"
+    ELECTRONICS="electronics"
+    UTILITIES="utilities"
+    CLOTHING="clothing"
+    HEALTH="health"
+    OTHERS="others"
 
 class ExpenseCategories(Base):
     __tablename__ = "expense_categories"

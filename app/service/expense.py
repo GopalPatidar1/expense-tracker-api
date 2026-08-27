@@ -4,12 +4,16 @@ from fastapi.responses import JSONResponse
 from app.core.customException import CustomException
 from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
+from app.schema.expense import ExpenseDateFilter
+from datetime import datetime, timedelta
 
 async def addExpensesItem(db: AsyncSession, expenseData, userId: int):
     try:
       expense = Expenses(
-          task=expenseData.task,
-          desc=expenseData.desc,
+          category_id=expenseData.category_id,
+          amount=expenseData.amount,
+          description=expenseData.description,
+          payment_method=expenseData.payment_method,
           user_id=int(userId),
       )
       
@@ -20,15 +24,30 @@ async def addExpensesItem(db: AsyncSession, expenseData, userId: int):
 
       return {
           "id": expense.id,
-          "task": expense.task,
+          "amount": expense.amount,
+          "description": expense.description,
       }
     except Exception as e:
         await db.rollback()
         print(f"Error creating Expense: {e}")
         raise CustomException(500, "Something went wrong") 
 
-async def getExpenselist(userId: int, db: AsyncSession, limit: int, nextCursor: int|None):
-   result =  await fetchExpense(db= db, userId= userId, limit= limit, nextCursor=nextCursor)
+async def getExpenselist(userId: int, db: AsyncSession, limit: int, nextCursor: int|None, dateFilter: str):
+   now = datetime.now()
+   startDate, endDate = None, None
+   if dateFilter == ExpenseDateFilter.PAST_WEEK:
+       startDate = now - timedelta(days=7)
+       endDate = now
+   
+   elif dateFilter == ExpenseDateFilter.PAST_MONTH:
+       startDate = now - timedelta(days=30)
+       endDate = now
+   
+   elif dateFilter == ExpenseDateFilter.LAST_3_MONTHS:
+       startDate = now - timedelta(days=90)
+       endDate = now
+   
+   result =  await fetchExpense(db= db, userId= userId, limit= limit, nextCursor=nextCursor,  startDate=startDate,endDate=endDate,)
    nextCursor = result[-1].id if result else None
    availNext = len(result) > limit
    return {"nextCursor": nextCursor, "availNext":availNext ,"result": result[:limit]}

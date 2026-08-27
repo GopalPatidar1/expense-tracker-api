@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import jwt
-from app.api import auth, user, category
+from app.api import auth, user, category, expense
 from app.core.customException import CustomException
 from app.config.secretes import secretes
 
@@ -44,6 +44,7 @@ async def validateAuth(request, call_next):
 app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(category.router)
+app.include_router(expense.router)
 
 @app.get("/health")
 async def read_root():

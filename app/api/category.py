@@ -5,7 +5,7 @@ from app.service import category
 from app.config.database import get_db
 
 router = APIRouter(prefix="/catergory", tags=[
-    'Category'
+  'Category'
 ])
 
 @router.get('/')
@@ -21,5 +21,5 @@ async def updateCategory(id: int, db: AsyncSession= Depends(get_db), data = Crea
   return await category.updateCategory(db= db,data= data, id=id)
 
 @router.delete('/{id}')
-def deleteCategory():
-  pass
+async def deleteCategory(id: int, db: AsyncSession= Depends(get_db)):
+  return await category.deleteCategory(db=db, id=id)

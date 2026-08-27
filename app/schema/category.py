@@ -2,10 +2,13 @@ from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 
 class Categories(str, Enum):
-    CASH = "cash"
-    UPI = "upi"
-    CARD = "card"
-    OTHER = "other"
+    GROCERIES = "groceries"
+    LEISURE ="leisure"
+    ELECTRONICS="electronics"
+    UTILITIES="utilities"
+    CLOTHING="clothing"
+    HEALTH="health"
+    OTHERS="others"
 
 
 class CreateCategory(BaseModel):
