@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.customException import CustomException
 from fastapi import status
 from app.models.expense_categories import ExpenseCategories
+from app.schema.category import CreateCategory
 
 async def create_category(data, db: AsyncSession):
     try:
@@ -13,13 +14,14 @@ async def create_category(data, db: AsyncSession):
      await category.create_category(db=db, data=category_data)
 
      await db.commit()
+
      await db.refresh(category_data)
  
-     return {"id":category_data.id}
+     return { "id": category_data.id }
 
     except Exception as e:
      await db.rollback()
-     raise CustomException(status.HTTP_422_UNPROCESSABLE_CONTENT)
+     raise CustomException(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 async def get_category(db:AsyncSession):
   try:
@@ -34,6 +36,8 @@ async def update_category(db: AsyncSession, id: int, data):
      if category_data is None:
         raise CustomException(status.HTTP_404_NOT_FOUND, "Category not found")
      await db.commit()
+
+     return category_data
    except CustomException:
      raise
    except Exception as e:
@@ -48,7 +52,9 @@ async def delete_category(db: AsyncSession, id: int):
         raise CustomException(status.HTTP_404_NOT_FOUND, "Category not found")
      await db.commit()
 
-     return {"message": "Category deleted successfully"}
+     return {
+       'message': 'Category deleted successfully'
+     }
    except CustomException:
      raise
    except Exception as e:

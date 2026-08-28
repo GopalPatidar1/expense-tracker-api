@@ -12,6 +12,9 @@ class Categories(str, Enum):
 
 
 class CreateCategory(BaseModel):
-    category: str = Categories
+    category: Categories
     model_config = ConfigDict(extra="forbid")
 
+class CategryGetResponse(BaseModel):
+    id: int
+    category: Categories
