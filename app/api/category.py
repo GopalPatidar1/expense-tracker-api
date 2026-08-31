@@ -4,17 +4,19 @@ from app.schema.category import CreateCategory, CategryGetResponse
 from app.service import category
 from app.config.database import get_db
 from fastapi import status
+from app.auth.authorization import require_permission
+from app.auth.permissions import Permission
 
 router = APIRouter(prefix="/category", tags=[
   'Category'
 ])
 
-@router.get('/', response_model=CategryGetResponse)
+@router.get('/', response_model=list[CategryGetResponse])
 async def get_category(db: AsyncSession= Depends(get_db)):
   return await category.get_category(db)
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def create_category(data: CreateCategory, db: AsyncSession = Depends(get_db)):
+async def create_category(data: CreateCategory, current_user: bool = Depends(require_permission(Permission.CATEGORY_CREATE)), db: AsyncSession = Depends(get_db)):
   return await category.create_category(data=data, db=db)
 
 @router.put('/{id}')

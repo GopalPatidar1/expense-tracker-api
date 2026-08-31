@@ -10,6 +10,10 @@ class UserStatus(str, Enum):
     ACTIVE = "active"
     INACTIVE = "inactive"
 
+class Role(str, Enum):
+    user = "user"
+    admin = "admin"
+
 class User(Base):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -17,6 +21,7 @@ class User(Base):
     lastname: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
     email: Mapped[str] = mapped_column(String(255), index=True, nullable=False, unique=True)
     age: Mapped[int | None]= mapped_column(Integer, nullable=True)
+    role: Mapped[Role] = mapped_column(SQLEnum(Role), server_default=Role.user, nullable=False)
 
     password_hash: Mapped[str] = mapped_column(
         "password",
