@@ -96,7 +96,14 @@ async def test_update_category(authenticated_client):
 
 
 @pytest.mark.asyncio
-async def test_delete_category(authenticated_client):
+@pytest.mark.parametrize(
+    "id",
+    [
+        1,
+        2,
+    ]
+)
+async def test_delete_category(authenticated_client, id):
     mock_result = MagicMock()
     mock_result.rowcount = 1
 
@@ -109,7 +116,7 @@ async def test_delete_category(authenticated_client):
         new_callable=AsyncMock,
         return_value=mock_result
     ) as mock_service:
-        response = await authenticated_client.delete("/category/1")
+        response = await authenticated_client.delete(f"/category/{id}")
 
     assert response.status_code == 200
     assert response.json() == deleteRes
